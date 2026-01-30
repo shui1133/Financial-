@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>提前退休投資理財 AI 規劃</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans TC', sans-serif; background:#f6f7fb; margin:0; }
+    header { background:linear-gradient(135deg,#1e3c72,#2a5298); color:#fff; padding:48px 20px; text-align:center; }
+    header h1 { font-size:2.2rem; margin-bottom:12px; }
+    header p { opacity:0.9; }
+    main { max-width:1000px; margin: -40px auto 80px; padding:0 20px; }
+    .card { background:#fff; border-radius:16px; padding:28px; margin-bottom:24px; box-shadow:0 10px 30px rgba(0,0,0,.08); }
+    h2 { margin-top:0; font-size:1.4rem; }
+    label { display:block; margin-top:16px; font-weight:600; }
+    input, select { width:100%; padding:12px; margin-top:6px; border-radius:10px; border:1px solid #ccc; font-size:1rem; }
+    button { margin-top:24px; background:#2a5298; color:#fff; border:none; padding:14px 24px; font-size:1rem; border-radius:12px; cursor:pointer; }
+    button:hover { background:#1e3c72; }
+    .result-box { background:#f0f4ff; border-radius:12px; padding:20px; margin-top:16px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+    .etag { display:inline-block; background:#e0e7ff; color:#1e3c72; padding:6px 10px; border-radius:999px; font-size:.85rem; margin:4px 4px 0 0; }
+    footer { text-align:center; font-size:.85rem; color:#666; padding:40px 20px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>提前退休投資理財 AI 規劃</h1>
+  <p>輸入 3 個數字，模擬你的退休現金流與 ETF 資產配置藍圖</p>
+</header>
+
+<main>
+
+  <!-- 投資需求輸入 -->
+  <div class="card">
+    <h2>① 輸入你的投資需求</h2>
+
+    <label>投資期間（年）</label>
+    <input type="number" id="years" placeholder="例如：20" />
+
+    <label>退休後每年現金流需求（元）</label>
+    <input type="number" id="cashflow" placeholder="例如：600000" />
+
+    <label>風險承受度</label>
+    <select id="risk">
+      <option value="conservative">保守型</option>
+      <option value="balanced" selected>穩健型</option>
+      <option value="aggressive">積極型</option>
+    </select>
+
+    <button onclick="calculate()">立即產生退休投資規劃</button>
+  </div>
+
+  <!-- 投資結果 -->
+  <div class="card" id="result" style="display:none;">
+    <h2>② AI 投資規劃結果</h2>
+
+    <div class="grid">
+      <div class="result-box">
+        <strong>建議每月投入</strong>
+        <p id="monthly"></p>
+      </div>
+      <div class="result-box">
+        <strong>預估累積資產</strong>
+        <p id="asset"></p>
+      </div>
+      <div class="result-box">
+        <strong>預估年現金流</strong>
+        <p id="income"></p>
+      </div>
+    </div>
+
+    <h3>ETF 資產配置建議（台股 ETF TOP 20 範圍）</h3>
+    <div id="allocation"></div>
+
+    <h3>配置理由（AI 說明）</h3>
+    <p id="reason"></p>
+  </div>
+
+</main>
+
+<footer>
+  本平台提供之內容僅為投資規劃與模擬參考，不構成任何投資建議或買賣指令。<br />
+  投資一定有風險，請審慎評估自身狀況。
+</footer>
+
+<script>
+  function calculate() {
+    const years = Number(document.getElementById('years').value);
+    const cash = Number(document.getElementById('cashflow').value);
+    const risk = document.getElementById('risk').value;
+
+    if (!years || !cash) {
+      alert('請完整輸入投資期間與現金流需求');
+      return;
+    }
+
+    let yieldRate = 0.05;
+    let allocation;
+    let reason;
+
+    if (risk === 'conservative') {
+      yieldRate = 0.04;
+      allocation = ['40% 高股息 ETF','40% 債券型 ETF','20% 市場型 ETF'];
+      reason = '以穩定配息與低波動為核心，降低資產波動風險，適合保守型投資人。';
+    } else if (risk === 'balanced') {
+      yieldRate = 0.05;
+      allocation = ['30% 高股息 ETF','30% 市場型 ETF','20% 成長型 ETF','20% 債券型 ETF'];
+      reason = '兼顧現金流與長期成長，透過多元 ETF 分散風險，提升整體穩定度。';
+    } else {
+      yieldRate = 0.06;
+      allocation = ['50% 成長型 ETF','30% 市場型 ETF','20% 高股息 ETF'];
+      reason = '以長期成長為主，承擔較高波動，追求資產最大化。';
+    }
+
+    const targetAsset = cash / yieldRate;
+    const monthly = targetAsset / (years * 12);
+
+    document.getElementById('monthly').innerText = '約 NT$ ' + Math.round(monthly).toLocaleString();
+    document.getElementById('asset').innerText = '約 NT$ ' + Math.round(targetAsset).toLocaleString();
+    document.getElementById('income').innerText = 'NT$ ' + cash.toLocaleString();
+
+    document.getElementById('allocation').innerHTML = allocation.map(a => `<span class="etag">${a}</span>`).join('');
+    document.getElementById('reason').innerText = reason;
+
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  }
+</script>
+
+</body>
+</html>
