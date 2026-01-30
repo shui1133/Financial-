@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 智能退休投資理財規劃系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .results {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            background: #f7fafc;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .result-card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.5em;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .etf-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .etf-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .etf-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .etf-item .etf-code {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .etf-item .etf-name {
+            color: #4a5568;
+            margin: 5px 0;
+        }
+
+        .etf-item .etf-details {
+            font-size: 0.9em;
+            color: #718096;
+            margin-top: 8px;
+        }
+
+        .allocation-chart {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            height: 40px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .allocation-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .allocation-bar:hover {
+            opacity: 0.8;
+        }
+
+        .strategy-box {
+            background: #edf2f7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .strategy-box h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .strategy-box ul {
+            list-style-position: inside;
+            color: #4a5568;
+            line-height: 1.8;
+        }
+
+        .calculator-result {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .calculator-result h4 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .calculator-result .value {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #4a5568;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .warning {
+            background: #fed7d7;
+            border-left: 5px solid #f56565;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #742a2a;
+        }
+
+        .info {
+            background: #bee3f8;
+            border-left: 5px solid #4299e1;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #2c5282;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .etf-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 AI 智能退休投資理財規劃系統</h1>
+            <p>運用 AI + 演算法 + 大數據分析，為您打造專屬退休投資策略</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 輸入表單區 -->
+            <div class="section">
+                <h2 class="section-title">📋 投資需求設定</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="investmentPeriod">投資期間（年）</label>
+                        <input type="number" id="investmentPeriod" min="1" max="50" value="20" required>
+                        <small style="color: #718096;">建議範圍：5-30 年</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetAnnualReturn">年化報酬需求（萬元/年）</label>
+                        <input type="number" id="targetAnnualReturn" min="10" max="500" value="60" required>
+                        <small style="color: #718096;">退休後每年需要的收益</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="currentAge">目前年齡</label>
+                        <input type="number" id="currentAge" min="20" max="80" value="35" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>風險承受度</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="conservative" name="riskProfile" value="conservative">
+                            <label for="conservative" style="margin: 0;">保守型（年化報酬 4-6%）</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="moderate" name="riskProfile" value="moderate" checked>
+                            <label for="moderate" style="margin: 0;">穩健型（年化報酬 6-9%）</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="aggressive" name="riskProfile" value="aggressive">
+                            <label for="aggressive" style="margin: 0;">積極型（年化報酬 9-12%）</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="rebalanceFreq">再平衡頻率</label>
+                    <select id="rebalanceFreq">
+                        <option value="monthly">每月</option>
+                        <option value="quarterly" selected>每季</option>
+                        <option value="semiannually">每半年</option>
+                        <option value="annually">每年</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="calculatePlan()">🚀 產生投資規劃</button>
+            </div>
+
+            <!-- 結果顯示區 -->
+            <div id="results" class="results">
+                <!-- 每月投入建議 -->
+                <div class="section">
+                    <h2 class="section-title">💰 每月投資建議</h2>
+                    <div class="highlight" id="monthlyInvestment"></div>
+                    <div class="info">
+                        <strong>💡 計算說明：</strong><span id="calculationExplanation"></span>
+                    </div>
+                </div>
+
+                <!-- ETF 推薦清單 -->
+                <div class="section">
+                    <h2 class="section-title">📊 推薦 ETF 清單</h2>
+                    <div id="etfRecommendations"></div>
+                </div>
+
+                <!-- 資產配置建議 -->
+                <div class="section">
+                    <h2 class="section-title">🎯 資產配置策略</h2>
+                    <div id="allocationChart" class="allocation-chart"></div>
+                    <div id="allocationDetails"></div>
+                </div>
+
+                <!-- 投資報酬率分析 -->
+                <div class="section">
+                    <h2 class="section-title">📈 投資報酬率分析</h2>
+                    <div id="returnAnalysis"></div>
+                </div>
+
+                <!-- 長期複利效果 -->
+                <div class="section">
+                    <h2 class="section-title">💎 複利成長預測</h2>
+                    <div id="compoundInterest"></div>
+                </div>
+
+                <!-- 再平衡建議 -->
+                <div class="section">
+                    <h2 class="section-title">🔄 定期再平衡策略</h2>
+                    <div id="rebalanceStrategy"></div>
+                </div>
+
+                <!-- 風險提醒 -->
+                <div class="section">
+                    <div class="warning">
+                        <strong>⚠️ 投資風險提醒：</strong>
+                        <ul style="margin-top: 10px; line-height: 1.8;">
+                            <li>本系統提供的建議僅供參考，實際投資報酬率會受市場波動影響</li>
+                            <li>過去績效不代表未來表現，投資前請詳閱公開說明書</li>
+                            <li>建議定期檢視投資組合，並依個人財務狀況調整</li>
+                            <li>請確保有足夠的緊急預備金後再進行長期投資</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 AI 智能投資理財規劃系統 | 本系統僅供參考，不構成投資建議</p>
+            <p style="margin-top: 5px; font-size: 0.8em;">數據來源：台灣證券交易所、公開資訊觀測站</p>
+        </footer>
+    </div>
+
+    <script>
+        // ETF 資料庫（台灣市場 TOP 20）
+        const etfDatabase = {
+            conservative: [
+                { code: '00679B', name: '元大美債20年', type: '債券型', yield: 4.2, expense: 0.15, risk: '低', index: '美國20年期以上公債' },
+                { code: '00687B', name: '國泰20年美債', type: '債券型', yield: 4.1, expense: 0.15, risk: '低', index: '美國20年期以上公債' },
+                { code: '00772B', name: '中信高評級公司債', type: '債券型', yield: 4.5, expense: 0.20, risk: '低', index: '投資級公司債' },
+                { code: '0056', name: '元大高股息', type: '高股息', yield: 5.8, expense: 0.74, risk: '中低', index: '台灣高股息精選30' },
+                { code: '00878', name: '國泰永續高股息', type: '高股息', yield: 6.2, expense: 0.30, risk: '中低', index: 'MSCI臺灣ESG永續高股息精選30' }
+            ],
+            moderate: [
+                { code: '0050', name: '元大台灣50', type: '市場型', yield: 3.2, expense: 0.43, risk: '中', index: '台灣50指數' },
+                { code: '006208', name: '富邦台50', type: '市場型', yield: 3.1, expense: 0.32, risk: '中', index: '台灣50指數' },
+                { code: '00878', name: '國泰永續高股息', type: '高股息', yield: 6.2, expense: 0.30, risk: '中低', index: 'MSCI臺灣ESG永續高股息精選30' },
+                { code: '00919', name: '群益台灣精選高息', type: '高股息', yield: 6.8, expense: 0.30, risk: '中', index: '台灣精選高息指數' },
+                { code: '00929', name: '復華台灣科技優息', type: '科技股息', yield: 5.5, expense: 0.35, risk: '中', index: '台灣科技優息指數' },
+                { code: '00679B', name: '元大美債20年', type: '債券型', yield: 4.2, expense: 0.15, risk: '低', index: '美國20年期以上公債' }
+            ],
+            aggressive: [
+                { code: '00757', name: '統一FANG+', type: '科技成長', yield: 1.2, expense: 1.00, risk: '高', index: 'NYSE FANG+指數' },
+                { code: '00662', name: '富邦NASDAQ', type: '科技成長', yield: 0.8, expense: 0.50, risk: '高', index: 'NASDAQ-100指數' },
+                { code: '00881', name: '國泰台灣5G+', type: '產業型', yield: 2.5, expense: 0.40, risk: '高', index: '台灣5G+通訊指數' },
+                { code: '00891', name: '中信關鍵半導體', type: '產業型', yield: 2.0, expense: 0.40, risk: '高', index: 'ICE FactSet台灣ESG永續關鍵半導體指數' },
+                { code: '00929', name: '復華台灣科技優息', type: '科技股息', yield: 5.5, expense: 0.35, risk: '中高', index: '台灣科技優息指數' },
+                { code: '0050', name: '元大台灣50', type: '市場型', yield: 3.2, expense: 0.43, risk: '中', index: '台灣50指數' },
+                { code: '00919', name: '群益台灣精選高息', type: '高股息', yield: 6.8, expense: 0.30, risk: '中', index: '台灣精選高息指數' }
+            ]
+        };
+
+        // 資產配置策略
+        const allocationStrategies = {
+            conservative: {
+                bonds: 50,
+                dividend: 30,
+                market: 20,
+                growth: 0
+            },
+            moderate: {
+                bonds: 30,
+                dividend: 30,
+                market: 25,
+                growth: 15
+            },
+            aggressive: {
+                bonds: 10,
+                dividend: 20,
+                market: 30,
+                growth: 40
+            }
+        };
+
+        // 預期年化報酬率
+        const expectedReturns = {
+            conservative: 5.5,
+            moderate: 7.5,
+            aggressive: 10.0
+        };
+
+        function calculatePlan() {
+            // 獲取輸入值
+            const period = parseInt(document.getElementById('investmentPeriod').value);
+            const targetReturn = parseInt(document.getElementById('targetAnnualReturn').value) * 10000;
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const riskProfile = document.querySelector('input[name="riskProfile"]:checked').value;
+            const rebalanceFreq = document.getElementById('rebalanceFreq').value;
+
+            // 計算所需本金
+            const annualReturn = expectedReturns[riskProfile] / 100;
+            const requiredPrincipal = targetReturn / annualReturn;
+
+            // 計算每月投入金額（使用終值公式）
+            const monthlyRate = annualReturn / 12;
+            const months = period * 12;
+            const monthlyInvestment = requiredPrincipal * monthlyRate / ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+
+            // 顯示結果
+            displayResults(monthlyInvestment, requiredPrincipal, riskProfile, period, targetReturn, annualReturn, currentAge, rebalanceFreq, months);
+        }
+
+        function displayResults(monthlyInvestment, requiredPrincipal, riskProfile, period, targetReturn, annualReturn, currentAge, rebalanceFreq, months) {
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+
+            // 每月投資建議
+            document.getElementById('monthlyInvestment').innerHTML = `
+                建議每月投入：<span style="font-size: 1.3em;">NT$ ${formatNumber(Math.round(monthlyInvestment))}</span> 元
+            `;
+
+            document.getElementById('calculationExplanation').innerHTML = `
+                根據您的目標年化報酬 ${formatNumber(targetReturn)} 元，投資期間 ${period} 年，
+                風險承受度為${getRiskProfileName(riskProfile)}（預期年化報酬率 ${(annualReturn * 100).toFixed(1)}%），
+                計算得出需累積本金約 ${formatNumber(Math.round(requiredPrincipal))} 元。
+            `;
+
+            // ETF 推薦
+            displayETFRecommendations(riskProfile);
+
+            // 資產配置
+            displayAllocation(riskProfile);
+
+            // 報酬率分析
+            displayReturnAnalysis(monthlyInvestment, period, annualReturn, targetReturn);
+
+            // 複利效果
+            displayCompoundInterest(monthlyInvestment, months, annualReturn, requiredPrincipal);
+
+            // 再平衡策略
+            displayRebalanceStrategy(riskProfile, rebalanceFreq);
+        }
+
+        function displayETFRecommendations(riskProfile) {
+            const etfs = etfDatabase[riskProfile];
+            let html = `<div class="result-card">
+                <h3>根據您的${getRiskProfileName(riskProfile)}，推薦以下 ETF 組合：</h3>
+                <div class="etf-list">`;
+
+            etfs.forEach(etf => {
+                html += `
+                    <div class="etf-item">
+                        <div class="etf-code">${etf.code}</div>
+                        <div class="etf-name">${etf.name}</div>
+                        <div class="etf-details">
+                            <div>類型：${etf.type}</div>
+                            <div>殖利率：${etf.yield}%</div>
+                            <div>費用率：${etf.expense}%</div>
+                            <div>風險等級：${etf.risk}</div>
+                            <div style="margin-top: 5px; font-size: 0.85em; color: #4a5568;">追蹤指數：${etf.index}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            document.getElementById('etfRecommendations').innerHTML = html;
+        }
+
+        function displayAllocation(riskProfile) {
+            const allocation = allocationStrategies[riskProfile];
+            
+            // 配置圖表
+            let chartHTML = '';
+            const colors = {
+                bonds: '#48bb78',
+                dividend: '#4299e1',
+                market: '#ed8936',
+                growth: '#9f7aea'
+            };
+
+            const labels = {
+                bonds: '債券型',
+                dividend: '高股息',
+                market: '市場型',
+                growth: '成長型'
+            };
+
+            for (let [key, value] of Object.entries(allocation)) {
+                if (value > 0) {
+                    chartHTML += `
+                        <div class="allocation-bar" style="width: ${value}%; background: ${colors[key]};">
+                            ${labels[key]} ${value}%
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('allocationChart').innerHTML = chartHTML;
+
+            // 配置說明
+            let detailsHTML = `<div class="result-card">
+                <h3>資產配置理由與策略</h3>
+                <div class="strategy-box">
+                    <h4>🎯 配置策略說明</h4>
+                    <ul>`;
+
+            if (riskProfile === 'conservative') {
+                detailsHTML += `
+                    <li><strong>債券型 50%</strong>：提供穩定收益，降低整體波動風險</li>
+                    <li><strong>高股息 30%</strong>：定期配息收入，增加現金流</li>
+                    <li><strong>市場型 20%</strong>：參與市場成長，保持適度彈性</li>
+                `;
+            } else if (riskProfile === 'moderate') {
+                detailsHTML += `
+                    <li><strong>債券型 30%</strong>：穩定基礎，對沖股市風險</li>
+                    <li><strong>高股息 30%</strong>：平衡收益與成長，創造穩定現金流</li>
+                    <li><strong>市場型 25%</strong>：追蹤大盤表現，掌握整體趨勢</li>
+                    <li><strong>成長型 15%</strong>：增添成長動能，提升長期報酬</li>
+                `;
+            } else {
+                detailsHTML += `
+                    <li><strong>成長型 40%</strong>：追求高成長潛力，鎖定科技與創新產業</li>
+                    <li><strong>市場型 30%</strong>：穩固核心部位，分散單一產業風險</li>
+                    <li><strong>高股息 20%</strong>：提供基本收益，降低整體波動</li>
+                    <li><strong>債券型 10%</strong>：少量配置，保持資產彈性</li>
+                `;
+            }
+
+            detailsHTML += `
+                    </ul>
+                </div>
+                <div class="strategy-box">
+                    <h4>📊 風險分散優勢</h4>
+                    <ul>
+                        <li>跨產業配置：涵蓋科技、金融、傳產等多元產業</li>
+                        <li>跨資產類別：股票與債券搭配，降低系統性風險</li>
+                        <li>跨市場佈局：台股與美股兼具，分散單一市場風險</li>
+                        <li>費用率優化：選擇低費用率 ETF，降低長期成本</li>
+                    </ul>
+                </div>
+            </div>`;
+
+            document.getElementById('allocationDetails').innerHTML = detailsHTML;
+        }
+
+        function displayReturnAnalysis(monthlyInvestment, period, annualReturn, targetReturn) {
+            const totalInvestment = monthlyInvestment * period * 12;
+            const expectedValue = calculateFutureValue(monthlyInvestment, annualReturn / 12, period * 12);
+            const totalReturn = expectedValue - totalInvestment;
+            const returnRate = (totalReturn / totalInvestment) * 100;
+
+            let html = `
+                <div class="calculator-result">
+                    <h4>📊 預期投資成果（${period} 年後）</h4>
+                    <table style="background: white; color: #2d3748; border-radius: 8px;">
+                        <tr>
+                            <th>項目</th>
+                            <th>金額</th>
+                        </tr>
+                        <tr>
+                            <td>總投入本金</td>
+                            <td>NT$ ${formatNumber(Math.round(totalInvestment))}</td>
+                        </tr>
+                        <tr>
+                            <td>預期終值</td>
+                            <td><strong>NT$ ${formatNumber(Math.round(expectedValue))}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>投資收益</td>
+                            <td style="color: #48bb78;"><strong>NT$ ${formatNumber(Math.round(totalReturn))}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>總報酬率</td>
+                            <td><strong>${returnRate.toFixed(2)}%</strong></td>
+                        </tr>
+                        <tr>
+                            <td>年化報酬率</td>
+                            <td><strong>${(annualReturn * 100).toFixed(2)}%</strong></td>
+                        </tr>
+                        <tr>
+                            <td>退休後年收益</td>
+                            <td style="color: #667eea;"><strong>NT$ ${formatNumber(Math.round(targetReturn))}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+
+            document.getElementById('returnAnalysis').innerHTML = html;
+        }
+
+        function displayCompoundInterest(monthlyInvestment, months, annualReturn, targetPrincipal) {
+            let html = `<div class="result-card">
+                <h3>複利成長逐年預測（含配息再投入）</h3>
+                <table>
+                    <tr>
+                        <th>年度</th>
+                        <th>累積本金</th>
+                        <th>投資收益</th>
+                        <th>總資產</th>
+                        <th>年度報酬率</th>
+                    </tr>`;
+
+            let currentValue = 0;
+            const monthlyRate = annualReturn / 12;
+
+            for (let year = 1; year <= Math.min(Math.floor(months / 12), 30); year++) {
+                const previousValue = currentValue;
+                currentValue = calculateFutureValue(monthlyInvestment, monthlyRate, year * 12);
+                const invested = monthlyInvestment * year * 12;
+                const profit = currentValue - invested;
+                const yearReturn = previousValue > 0 ? ((currentValue - previousValue) / previousValue * 100) : 0;
+
+                if (year <= 10 || year % 5 === 0) {
+                    html += `
+                        <tr>
+                            <td>第 ${year} 年</td>
+                            <td>NT$ ${formatNumber(Math.round(invested))}</td>
+                            <td>NT$ ${formatNumber(Math.round(profit))}</td>
+                            <td><strong>NT$ ${formatNumber(Math.round(currentValue))}</strong></td>
+                            <td>${yearReturn.toFixed(2)}%</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            html += `</table>
+                <div class="info" style="margin-top: 20px;">
+                    <strong>💡 複利效果說明：</strong>
+                    <ul style="margin-top: 10px; line-height: 1.8;">
+                        <li>配息再投入可發揮複利效果，資產成長呈指數型增長</li>
+                        <li>投資時間越長，複利效果越顯著</li>
+                        <li>定期定額投資可平滑市場波動，降低進場時機風險</li>
+                    </ul>
+                </div>
+            </div>`;
+
+            document.getElementById('compoundInterest').innerHTML = html;
+        }
+
+        function displayRebalanceStrategy(riskProfile, rebalanceFreq) {
+            const freqText = {
+                monthly: '每月',
+                quarterly: '每季',
+                semiannually: '每半年',
+                annually: '每年'
+            };
+
+            let html = `<div class="result-card">
+                <h3>再平衡執行策略（頻率：${freqText[rebalanceFreq]}）</h3>
+                <div class="strategy-box">
+                    <h4>🔄 再平衡時機與條件</h4>
+                    <ul>
+                        <li><strong>定期檢視：</strong>${freqText[rebalanceFreq]}檢視各 ETF 比重是否偏離目標配置超過 5%</li>
+                        <li><strong>觸發條件：</strong>單一資產比重偏離目標 ±5% 即啟動再平衡</li>
+                        <li><strong>市場異動：</strong>遇重大市場事件（如股災、升息）時額外檢視</li>
+                        <li><strong>績效評估：</strong>檢視各 ETF 近期績效與追蹤誤差</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-box">
+                    <h4>📋 再平衡執行步驟</h4>
+                    <ul>
+                        <li><strong>Step 1：</strong>計算目前各 ETF 實際持有比例</li>
+                        <li><strong>Step 2：</strong>比對與目標配置的差異</li>
+                        <li><strong>Step 3：</strong>賣出超配部分（比例過高的資產）</li>
+                        <li><strong>Step 4：</strong>買入低配部分（比例過低的資產）</li>
+                        <li><strong>Step 5：</strong>記錄再平衡成本與稅務影響</li>
+                    </ul>
+                </div>
+
+                <div class="strategy-box">
+                    <h4>💡 換倉建議範例</h4>
+                    <ul>
+                        <li><strong>情境 1：</strong>若科技股大漲導致成長型 ETF 佔比從 15% 升至 25%，建議賣出 10% 轉入債券型或高股息</li>
+                        <li><strong>情境 2：</strong>若某 ETF 費用率調高或追蹤誤差擴大，考慮換至同類型但費用更低的 ETF</li>
+                        <li><strong>情境 3：</strong>若高股息 ETF 殖利率大幅下降（如從 6% 降至 3%），可調整至其他高股息標的</li>
+                        <li><strong>情境 4：</strong>接近退休年齡時，逐步增加債券型比例，降低股票型配置</li>
+                    </ul>
+                </div>
+
+                <div class="info">
+                    <strong>⚙️ 再平衡注意事項：</strong>
+                    <ul style="margin-top: 10px; line-height: 1.8;">
+                        <li>考慮交易成本：頻繁交易會增加手續費與稅負</li>
+                        <li>避免過度交易：小幅偏離（< 5%）不需立即調整</li>
+                        <li>利用新資金：優先用每月新投入資金調整比例，減少賣出</li>
+                        <li>稅務規劃：注意證券交易稅與所得稅影響</li>
+                    </ul>
+                </div>
+            </div>`;
+
+            document.getElementById('rebalanceStrategy').innerHTML = html;
+        }
+
+        // 計算終值（FV）- 定期定額
+        function calculateFutureValue(payment, rate, periods) {
+            if (rate === 0) return payment * periods;
+            return payment * ((Math.pow(1 + rate, periods) - 1) / rate) * (1 + rate);
+        }
+
+        // 格式化數字
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // 取得風險屬性中文名稱
+        function getRiskProfileName(profile) {
+            const names = {
+                conservative: '保守型',
+                moderate: '穩健型',
+                aggressive: '積極型'
+            };
+            return names[profile];
+        }
+
+        // 頁面載入時的初始化
+        window.onload = function() {
+            // 設定預設值
+            document.getElementById('moderate').checked = true;
+        };
+    </script>
+</body>
+</html>

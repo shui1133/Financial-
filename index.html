@@ -3,90 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 退休財務規劃方案對比</title>
+    <title>AI 退休理財分析報告導覽</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             background-color: #f8fafc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
-        .card {
-            transition: transform 0.2s, box-shadow 0.2s;
+        .card-hover {
+            transition: all 0.3s ease;
         }
-        .card:hover {
+        .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
-<body class="min-h-screen py-12 px-4">
-    <div class="max-w-4xl mx-auto">
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="max-w-4xl w-full">
         <header class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold text-slate-800 mb-4">AI 退休財務規劃彙整</h1>
-            <p class="text-lg text-slate-600">比較不同人工智慧模型生成的退休與財務規劃方案</p>
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-4">AI 退休理財分析導覽</h1>
+            <p class="text-lg text-gray-600">請選擇下方由不同 AI 模型生成的財務規劃報告</p>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Claude  -->
-            <a href="./Glaude/03AI_Retired_Financial.html" class="card bg-white p-6 rounded-2xl border border-slate-200 flex flex-col items-start">
-                <div class="bg-purple-100 p-3 rounded-lg mb-4">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            
+            <!-- Claude Card -->
+            <a href="./Claude/03AI_Retired_Financial.html" class="card-hover bg-white p-6 rounded-2xl border-l-8 border-[#d97757] flex items-center justify-between group">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 group-hover:text-[#d97757]">Claude 3.5</h2>
+                    <p class="text-gray-500 text-sm">財務規劃版本</p>
+                </div>
+                <div class="text-[#d97757]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 mb-2">Claude</h2>
-                <p class="text-slate-500 text-sm mb-4">檢視由 Claude 產生的退休規劃建議（03AI_Retired_Financial）。</p>
-                <span class="text-purple-600 font-semibold mt-auto flex items-center">
-                    查看詳情 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </span>
             </a>
 
-            <!-- Perplexity -->
-            <a href="./Preplexity/AI_Retired_Financial_all.html" class="card bg-white p-6 rounded-2xl border border-slate-200 flex flex-col items-start">
-                <div class="bg-teal-100 p-3 rounded-lg mb-4">
-                    <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            <!-- Perplexity Card -->
+            <a href="./Preplexity/AI_Retired_Financial_all.html" class="card-hover bg-white p-6 rounded-2xl border-l-8 border-[#1fb8cd] flex items-center justify-between group">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 group-hover:text-[#1fb8cd]">Perplexity</h2>
+                    <p class="text-gray-500 text-sm">完整財務分析報告</p>
+                </div>
+                <div class="text-[#1fb8cd]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 mb-2">Perplexity</h2>
-                <p class="text-slate-500 text-sm mb-4">檢視 Perplexity 的完整財務報告（AI_Retired_Financial_all.html）。</p>
-                <span class="text-teal-600 font-semibold mt-auto flex items-center">
-                    查看詳情 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </span>
             </a>
 
-            <!-- Gemini -->
-            <a href="./Gemini/AI_Retired_Financial.html" class="card bg-white p-6 rounded-2xl border border-slate-200 flex flex-col items-start">
-                <div class="bg-blue-100 p-3 rounded-lg mb-4">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            <!-- Gemini Card -->
+            <a href="./Gemini/AI_Retired_Financial.html" class="card-hover bg-white p-6 rounded-2xl border-l-8 border-[#4285f4] flex items-center justify-between group">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 group-hover:text-[#4285f4]">Google Gemini</h2>
+                    <p class="text-gray-500 text-sm">退休財務預測報告</p>
+                </div>
+                <div class="text-[#4285f4]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 mb-2">Gemini</h2>
-                <p class="text-slate-500 text-sm mb-4">檢視 Google Gemini 的財務分析方案（AI_Retired_Financial.html）。</p>
-                <span class="text-blue-600 font-semibold mt-auto flex items-center">
-                    查看詳情 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </span>
             </a>
 
-            <!-- ChatGPT -->
-            <a href="./ChatGTP/04ChatGTP.html" class="card bg-white p-6 rounded-2xl border border-slate-200 flex flex-col items-start">
-                <div class="bg-green-100 p-3 rounded-lg mb-4">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+            <!-- ChatGPT Card -->
+            <a href="./ChatGTP/04ChatGTP.html" class="card-hover bg-white p-6 rounded-2xl border-l-8 border-[#10a37f] flex items-center justify-between group">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 group-hover:text-[#10a37f]">ChatGPT</h2>
+                    <p class="text-gray-500 text-sm">財務規劃版本</p>
+                </div>
+                <div class="text-[#10a37f]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 mb-2">ChatGPT</h2>
-                <p class="text-slate-500 text-sm mb-4">檢視 OpenAI ChatGPT 產生的規劃方案（04ChatGTP.html）。</p>
-                <span class="text-green-600 font-semibold mt-auto flex items-center">
-                    查看詳情 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </span>
             </a>
+
         </div>
 
-        <footer class="mt-16 text-center text-slate-400 text-sm">
-            &copy; 2024 AI 退休財務規劃彙整工具
+        <footer class="mt-16 text-center text-gray-400 text-sm">
+            <p>© 2024 AI 財務決策系統分析</p>
         </footer>
     </div>
+
 </body>
 </html>
