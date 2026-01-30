@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 退休理財規劃專案導覽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-6">
+
+    <div class="max-w-4xl w-full">
+        <!-- 標題區 -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold gradient-text mb-4">AI 退休理財專案導覽中心</h1>
+            <p class="text-gray-600">請點擊下方卡片進入對應的研究檔案或報告</p>
+        </header>
+
+        <!-- 連結卡片容器 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Preplexity All 版本 -->
+            <a href="./Preplexity/AI_Retired_Financial_all.html" class="glass-card p-8 rounded-2xl flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Preplexity分析版本</h2>
+                <p class="text-sm text-gray-500">包含所有詳細數據與深入分析的財務規劃報告。</p>
+                <span class="mt-4 text-blue-600 font-semibold group-hover:underline">立即查看 →</span>
+            </a>
+
+
+            <!-- Gemini 版本 -->
+            <a href="./Gemini/AI_Retired_Financial.html" class="glass-card p-8 rounded-2xl flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Gemini 分析版本</h2>
+                <p class="text-sm text-gray-500">使用 Google Gemini 模型生成的理財視角與規劃策略。</p>
+                <span class="mt-4 text-purple-600 font-semibold group-hover:underline">立即查看 →</span>
+            </a>
+
+        </div>
+
+        <!-- 頁尾 -->
+        <footer class="mt-16 text-center text-gray-400 text-xs">
+            <p>&copy; 2024 AI 退休理財研究專案 - 私人導覽界面</p>
+        </footer>
+    </div>
+
+</body>
+</html>
