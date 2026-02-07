@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIRE-AI 退休專家系統 v7.2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        .header-bg { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
+        .strategy-btn { cursor: pointer; padding: 12px 16px; border-radius: 12px; font-weight: bold; border: 2px solid #e2e8f0; transition: all 0.2s; text-align: left; }
+        .active-btn { background-color: #2563eb; color: white; border-color: #3b82f6; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .inactive-btn { background-color: white; color: #64748b; }
+        .etf-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .amount-tag-blue { background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .amount-tag-green { background: rgba(52, 211, 153, 0.15); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.3); }
+    </style>
+</head>
+<body class="bg-slate-50 p-4 md:p-8">
+    <div class="max-w-6xl mx-auto bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100">
+        
+        <div class="header-bg p-8 text-white text-center">
+            <h1 class="text-3xl font-black italic tracking-tighter">FIRE-AI 退休專家系統 <span class="text-blue-400 text-sm font-normal not-italic ml-2">v7.2</span></h1>
+            <p class="text-blue-100 mt-2 text-sm">實戰分配指南 • 首筆與月扣同步計算 • 納入 3% 通膨修正</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 p-8">
+            <div class="space-y-6">
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <h2 class="font-bold mb-4 text-slate-700 flex items-center"><i class="fa-solid fa-calculator mr-2 text-blue-600"></i>輸入規劃參數</h2>
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <label class="block text-slate-500 font-bold mb-1 text-xs uppercase">目前年齡</label>
+                            <input type="number" id="age" value="30" oninput="calculateMain()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-500 font-bold mb-1 text-xs uppercase">啟動資金 (萬元)</label>
+                            <input type="number" id="start" value="100" oninput="calculateMain()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-500 font-bold mb-1 text-xs uppercase">每月定期定額 (萬元)</label>
+                            <input type="number" id="monthly" value="3" oninput="calculateMain()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-500 font-bold mb-1 text-xs uppercase">目標退休月領 (現值/萬元)</label>
+                            <input type="number" id="spend" value="4" oninput="calculateMain()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-slate-500 font-bold mb-3 text-xs tracking-widest uppercase">選擇投資策略</label>
+                        <div class="grid grid-cols-1 gap-3">
+                            <button id="btn4" onclick="changeStrategy(4, 'btn4')" class="strategy-btn active-btn">
+                                <div class="text-xs opacity-70">保守 4%</div>
+                                <div class="text-sm">月配全明星</div>
+                            </button>
+                            <button id="btn6" onclick="changeStrategy(6, 'btn6')" class="strategy-btn inactive-btn">
+                                <div class="text-xs opacity-70">穩健 6%</div>
+                                <div class="text-sm">現金流強化</div>
+                            </button>
+                            <button id="btn8" onclick="changeStrategy(8, 'btn8')" class="strategy-btn inactive-btn">
+                                <div class="text-xs opacity-70">積極 8%</div>
+                                <div class="text-sm">成長與月配</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center">
+                        <p class="text-blue-500 text-[10px] font-bold uppercase tracking-widest">通膨修正後目標</p>
+                        <h3 id="resTarget" class="text-2xl font-black text-slate-800">--</h3>
+                    </div>
+                    <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 text-center">
+                        <p class="text-indigo-500 text-[10px] font-bold uppercase tracking-widest">達成所需年分</p>
+                        <h3 id="resYears" class="text-2xl font-black text-slate-800">--</h3>
+                    </div>
+                    <div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 text-center">
+                        <p class="text-emerald-500 text-[10px] font-bold uppercase tracking-widest">退休執行年齡</p>
+                        <h3 id="resAge" class="text-2xl font-black text-slate-800">--</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border border-slate-200">
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="fireChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                        <div>
+                            <h3 class="font-black text-xl flex items-center text-blue-400">
+                                <i class="fa-solid fa-layer-group mr-3"></i> AI 實戰分配建議
+                            </h3>
+                            <p class="text-slate-400 text-xs mt-1">系統已根據您的資金規模完成比例精算</p>
+                        </div>
+                        <div id="strategyTitle" class="text-xs bg-white/10 px-4 py-2 rounded-xl text-blue-200 border border-white/10"></div>
+                    </div>
+                    
+                    <div id="etfBoxes" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        </div>
+
+                    <div class="bg-white/5 rounded-2xl p-6 border border-white/5">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center">
+                            <i class="fa-solid fa-lightbulb mr-2 text-yellow-500"></i> 專家調校邏輯
+                        </h4>
+                        <div id="reasonList" class="text-sm text-slate-300 space-y-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let fireChart = null;
+        let currentRate = 4;
+
+        const etfData = {
+            4: {
+                title: "保守型：月配全明星組合",
+                list: [
+                    {c:"00878", w:0.4, m:"配息：2, 5, 8, 11月"}, 
+                    {c:"00713", w:0.3, m:"配息：3, 6, 9, 12月"}, 
+                    {c:"00679B", w:0.3, m:"配息：1, 4, 7, 10月"}
+                ],
+                reasons: [
+                    "<b>首筆投入分配：</b>將啟動資金依比例分散，初期即建立 12 個月配息骨架。",
+                    "<b>防禦核心：</b>30% 的 00679B (元大美債20年) 能在股市回檔時產生負相關保護。",
+                    "<b>執行建議：</b>此組合波動極低，適合將大筆資金一次性按比例投入後長期持有。"
+                ]
+            },
+            6: {
+                title: "穩健型：現金流與成長平衡",
+                list: [
+                    {c:"00919", w:0.35, m:"季配 (3,6,9,12月)"}, 
+                    {c:"00929", w:0.40, m:"月配 (每月發錢)"}, 
+                    {c:"0056", w:0.25, m:"季配 (1,4,7,10月)"}
+                ],
+                reasons: [
+                    "<b>穩定引擎：</b>00929 (月配) 權重佔 40%，確保每月現金流足以應對日常生活。",
+                    "<b>殖利率優勢：</b>組合平均股息率優於 6%，讓本金在提領之餘仍具備自我成長動能。",
+                    "<b>配置策略：</b>結合預測型與歷史型高息 ETF，分散單一選股邏輯的風險。"
+                ]
+            },
+            8: {
+                title: "積極型：市值成長與月配引擎",
+                list: [
+                    {c:"006208", w:0.3, m:"半年配 (主力增長)"}, 
+                    {c:"00929", w:0.5, m:"月配 (穩定供金)"}, 
+                    {c:"00915", w:0.2, m:"季配 (高勝率)"}
+                ],
+                reasons: [
+                    "<b>對抗提領缺口：</b>利用 50% 權重的 00929 提供的高頻現金流，支撐市值型 ETF (006208) 的成長期。",
+                    "<b>抗通膨力：</b>30% 的 006208 負責獲取台股大盤超額報酬，是達成 8% 提領率的關鍵增長極。",
+                    "<b>配置提示：</b>首筆資金投入後，若遇大盤重挫，應優先加碼 006208 部位。"
+                ]
+            }
+        };
+
+        function changeStrategy(rate, btnId) {
+            currentRate = rate;
+            document.querySelectorAll('.strategy-btn').forEach(b => {
+                b.classList.remove('active-btn');
+                b.classList.add('inactive-btn');
+            });
+            document.getElementById(btnId).classList.add('active-btn');
+            calculateMain();
+        }
+
+        function calculateMain() {
+            try {
+                const userAge = parseInt(document.getElementById('age').value) || 0;
+                const startWan = parseFloat(document.getElementById('start').value) || 0;
+                const monthlyWan = parseFloat(document.getElementById('monthly').value) || 0;
+                const spendWan = parseFloat(document.getElementById('spend').value) || 0;
+
+                const r_invest = 0.08; 
+                const r_inf = 0.03;
+                const target_base = (spendWan * 12) / (currentRate / 100);
+
+                let wealth = startWan;
+                let labels = [];
+                let wData = [];
+                let tData = [];
+                let finishY = -1;
+
+                for (let y = 0; y <= 40; y++) {
+                    labels.push("第" + y + "年");
+                    let infT = target_base * Math.pow(1 + r_inf, y);
+                    wData.push(Math.round(wealth));
+                    tData.push(Math.round(infT));
+                    if (wealth >= infT && finishY === -1) finishY = y;
+                    wealth = (wealth + (monthlyWan * 12)) * (1 + r_invest);
+                }
+
+                document.getElementById('resTarget').innerText = finishY !== -1 ? Math.round(target_base * Math.pow(1 + r_inf, finishY)) + " 萬" : "需增加投入";
+                document.getElementById('resYears').innerText = finishY !== -1 ? finishY + " 年" : "--";
+                document.getElementById('resAge').innerText = finishY !== -1 ? (userAge + finishY) + " 歲" : "--";
+
+                const info = etfData[currentRate];
+                document.getElementById('strategyTitle').innerText = info.title;
+                
+                // 動態渲染帶有「首筆」與「月扣」分配金額的卡片
+                document.getElementById('etfBoxes').innerHTML = info.list.map(e => {
+                    const initAlloc = (startWan * e.w).toFixed(1); // 啟動資金分配
+                    const monthlyAlloc = (monthlyWan * e.w).toFixed(2); // 每月扣款分配
+                    return `
+                    <div class="etf-card p-6 rounded-3xl text-center relative hover:bg-white/10 transition border border-white/10 shadow-lg">
+                        <div class="text-blue-400 font-bold text-[10px] mb-2 uppercase tracking-widest italic opacity-70">權重 ${(e.w * 100)}%</div>
+                        <div class="font-black text-2xl mb-3 tracking-tighter">${e.c}</div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="amount-tag-blue py-2 px-3 rounded-xl text-xs font-bold">
+                                首筆投入：${initAlloc} 萬
+                            </div>
+                            <div class="amount-tag-green py-2 px-3 rounded-xl text-xs font-bold">
+                                建議月扣：${monthlyAlloc} 萬
+                            </div>
+                        </div>
+                        
+                        <div class="text-[9px] text-slate-500 font-medium">${e.m}</div>
+                    </div>
+                `}).join('');
+                
+                document.getElementById('reasonList').innerHTML = info.reasons.map(r => `
+                    <div class="flex items-start">
+                        <i class="fa-solid fa-check-double text-blue-500 mt-1 mr-3 text-xs"></i>
+                        <span>${r}</span>
+                    </div>
+                `).join('');
+
+                renderChart(labels, wData, tData);
+            } catch (err) {}
+        }
+
+        function renderChart(l, d1, d2) {
+            const ctx = document.getElementById('fireChart');
+            if (fireChart) fireChart.destroy();
+            fireChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: l,
+                    datasets: [
+                        { label: '資產預估', data: d1, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4, borderWidth: 3 },
+                        { label: '退休門檻', data: d2, borderColor: '#ef4444', borderDash: [6, 4], pointRadius: 0, borderWidth: 2 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+        window.addEventListener('load', () => setTimeout(calculateMain, 300));
+    </script>
+</body>
+</html>
